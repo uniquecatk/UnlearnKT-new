@@ -1,0 +1,167 @@
+{
+  "data": {
+    "class": "kt_unlearn.data.datasets.DatasetManager.DatasetManager",
+    "parameters": {
+      "DataSource": {
+        "class": "kt_unlearn.data.data_sources.KTFileDataSource.KTFileDataSource",
+        "parameters": {
+          "path": "c:/Users/ksm/Desktop/pyktmu-main/fin-1/data/demo/assist2009_demo_sequences.csv",
+          "max_seq_len": 100,
+          "pad_val": -1
+        }
+      },
+      "partitions": [
+        {
+          "class": "kt_unlearn.data.datasets.KTDataSplitter.KTDataSplitterByFold",
+          "parameters": {
+            "parts_names": ["train", "not_train"],
+            "fold_values": [0]
+          }
+        },
+        {
+          "class": "kt_unlearn.data.datasets.KTDataSplitter.KTDataSplitterByFold",
+          "parameters": {
+            "parts_names": ["valid", "not_valid"],
+            "fold_values": [5]
+          }
+        },
+        {
+          "class": "kt_unlearn.data.datasets.KTDataSplitter.KTDataSplitterByFold",
+          "parameters": {
+            "parts_names": ["test", "not_test"],
+            "fold_values": [-1]
+          }
+        },
+        {
+          "class": "kt_unlearn.data.datasets.DataSplitter.DataSplitterPercentage",
+          "parameters": {
+            "parts_names": ["forget", "retain"],
+            "percentage": 0.1,
+            "ref_data": "train",
+            "shuffle": true
+          }
+        }
+      ],
+      "batch_size": 16
+    }
+  },
+  "predictor": {
+    "class": "kt_unlearn.model.KTModel.KTModel",
+    "parameters": {
+      "epochs": 3,
+      "optimizer": {
+        "class": "torch.optim.Adam",
+        "parameters": {
+          "lr": 0.001
+        }
+      },
+      "loss_fn": {
+        "class": "kt_unlearn.model.KTModel.KTLoss",
+        "parameters": {}
+      },
+      "model": {
+        "class": "kt_unlearn.model.KTModel.DKTSequenceModel",
+        "parameters": {
+          "emb_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "training_set": "train"
+    }
+  },
+  "unlearners": [
+    {
+      "class": "kt_unlearn.unlearners.GoldModel.GoldModel",
+      "parameters": {
+        "training_set": "retain",
+        "cached": false
+      }
+    },
+    {
+      "class": "kt_unlearn.unlearners.Finetuning.Finetuning",
+      "parameters": {
+        "epochs": 2,
+        "ref_data": "retain",
+        "optimizer": {
+          "class": "torch.optim.Adam",
+          "parameters": {
+            "lr": 0.0005
+          }
+        }
+      }
+    },
+    {
+      "class": "kt_unlearn.unlearners.NegGrad.NegGrad",
+      "parameters": {
+        "epochs": 1,
+        "ref_data": "forget",
+        "optimizer": {
+          "class": "torch.optim.Adam",
+          "parameters": {
+            "lr": 0.0001
+          }
+        }
+      }
+    }
+  ],
+  "evaluator": {
+    "class": "kt_unlearn.evaluations.manager.Evaluator",
+    "parameters": {
+      "measures": [
+        { "class": "kt_unlearn.evaluations.running.RunTime" },
+        { "class": "kt_unlearn.evaluations.kt_measures.KTAUS", "parameters": { "forget_part": "forget", "test_part": "test" } },
+        { "class": "kt_unlearn.evaluations.kt_measures.KTRelearnTime", "parameters": { "forget_part": "forget", "max_epochs": 8 } },
+        { "class": "kt_unlearn.evaluations.kt_measures.KTAIN", "parameters": { "alpha": 0.05, "forget_part": "forget", "max_epochs": 8 } },
+        { "class": "kt_unlearn.evaluations.kt_measures.KTUMIA", "parameters": { "member_part": "forget", "nonmember_part": "test" } },
+        { "class": "kt_unlearn.evaluations.kt_measures.KTMetrics", "parameters": { "partition": "test", "target": "original" } },
+        { "class": "kt_unlearn.evaluations.kt_measures.KTMetrics", "parameters": { "partition": "test", "target": "unlearned" } },
+        { "class": "kt_unlearn.evaluations.kt_measures.KTMetrics", "parameters": { "partition": "forget", "target": "original" } },
+        { "class": "kt_unlearn.evaluations.kt_measures.KTMetrics", "parameters": { "partition": "forget", "target": "unlearned" } },
+        { "class": "kt_unlearn.evaluations.kt_measures.KTMetrics", "parameters": { "partition": "retain", "target": "original" } },
+        { "class": "kt_unlearn.evaluations.kt_measures.KTMetrics", "parameters": { "partition": "retain", "target": "unlearned" } },
+        {
+          "class": "kt_unlearn.evaluations.measures.SaveValues",
+          "parameters": {
+            "path": "output/runs/kt/examples/assist2009_full_eval.csv",
+            "output_format": "csv",
+            "exclude_prefixes": ["parameters"],
+            "column_order": [
+              "unlearner",
+              "dataset",
+              "RunTime",
+              "AUS",
+              "RelearnTime",
+              "AIN",
+              "UMIA",
+              "UMIA_AUC",
+              "kt.loss.test.original",
+              "kt.acc.test.original",
+              "kt.auc.test.original",
+              "kt.loss.test.unlearned",
+              "kt.acc.test.unlearned",
+              "kt.auc.test.unlearned",
+              "kt.loss.forget.original",
+              "kt.acc.forget.original",
+              "kt.auc.forget.original",
+              "kt.loss.forget.unlearned",
+              "kt.acc.forget.unlearned",
+              "kt.auc.forget.unlearned",
+              "kt.loss.retain.original",
+              "kt.acc.retain.original",
+              "kt.auc.retain.original",
+              "kt.loss.retain.unlearned",
+              "kt.acc.retain.unlearned",
+              "kt.auc.retain.unlearned"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "globals": {
+    "cached": "false",
+    "seed": 42
+  }
+}
+
+

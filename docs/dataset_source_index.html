@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UnlearnKT Dataset Source Index</title>
+    <link rel="stylesheet" href="dataset_source_index.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">UnlearnKT</p>
+          <h1>Dataset Source Index</h1>
+          <p class="subtitle">
+            Official source links, local folder names, setup notes, and
+            download entrances for the datasets supported by this repository.
+          </p>
+        </div>
+        <span class="repo-link">Static page for GitHub Pages</span>
+      </header>
+
+      <section class="notice">
+        <p>
+          Datasets used in the paper are pinned to the top and marked in the
+          <strong>Used in Paper</strong> column, so reviewers can immediately
+          find the six required datasets.
+        </p>
+        <ul>
+          <li>
+            <strong>Official Source</strong>: original dataset landing page or
+            official project page.
+          </li>
+          <li>
+            <strong>Processed Package</strong>: your Google Drive package for
+            `data/processed_datasets/`.
+          </li>
+          <li>
+            <strong>Setup Notes</strong>: where to place the downloaded files
+            before starting the experiments.
+          </li>
+        </ul>
+      </section>
+
+      <section class="toolbar">
+        <label class="toggle">
+          <input id="paper-only-toggle" type="checkbox" />
+          <span>Show only datasets used in the paper</span>
+        </label>
+        <span id="dataset-count" class="count"></span>
+      </section>
+
+      <section class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Used in Paper</th>
+              <th>Dataset</th>
+              <th>Local Folder</th>
+              <th>Official Source</th>
+              <th>Processed Package</th>
+              <th>Setup Notes</th>
+            </tr>
+          </thead>
+          <tbody id="dataset-table-body"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <script src="dataset_source_index.js"></script>
+  </body>
+</html>

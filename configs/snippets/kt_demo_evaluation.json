@@ -1,0 +1,87 @@
+{
+  "evaluator": {
+    "class": "kt_unlearn.evaluations.manager.Evaluator",
+    "parameters": {
+      "measures": [
+        {
+          "class": "kt_unlearn.evaluations.running.RunTime"
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "test",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "test",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "forget",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "forget",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "retain",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "retain",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.measures.SaveValues",
+          "parameters": {
+            "path": "output/runs/kt/examples/assist2009_demo.csv",
+            "output_format": "csv",
+            "exclude_prefixes": [
+              "parameters"
+            ],
+            "column_order": [
+              "unlearner",
+              "dataset",
+              "RunTime",
+              "kt.loss.test.original",
+              "kt.acc.test.original",
+              "kt.auc.test.original",
+              "kt.loss.test.unlearned",
+              "kt.acc.test.unlearned",
+              "kt.auc.test.unlearned",
+              "kt.loss.forget.original",
+              "kt.acc.forget.original",
+              "kt.auc.forget.original",
+              "kt.loss.forget.unlearned",
+              "kt.acc.forget.unlearned",
+              "kt.auc.forget.unlearned",
+              "kt.loss.retain.original",
+              "kt.acc.retain.original",
+              "kt.auc.retain.original",
+              "kt.loss.retain.unlearned",
+              "kt.acc.retain.unlearned",
+              "kt.auc.retain.unlearned"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

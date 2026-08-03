@@ -1,0 +1,293 @@
+{
+  "data": {
+    "class": "kt_unlearn.data.datasets.DatasetManager.DatasetManager",
+    "parameters": {
+      "DataSource": {
+        "class": "kt_unlearn.data.data_sources.KTFileDataSource.KTFileDataSource",
+        "parameters": {
+          "path": "data/demo/assist2009_demo_sequences.csv",
+          "max_seq_len": 100,
+          "pad_val": -1
+        }
+      },
+      "partitions": [
+        {
+          "class": "kt_unlearn.data.datasets.KTDataSplitter.KTDataSplitterByFold",
+          "parameters": {
+            "parts_names": [
+              "train_source",
+              "not_train_source"
+            ],
+            "fold_values": [
+              0
+            ]
+          }
+        },
+        {
+          "class": "kt_unlearn.data.KTDataSplitterByParticipation",
+          "parameters": {
+            "parts_names": [
+              "forget",
+              "other_users"
+            ],
+            "source_partition_name": "train_source",
+            "forget_partition_name": "forget",
+            "other_partition_name": "other_users",
+            "mode": "less_than",
+            "threshold": 5,
+            "user_id_field": "uid",
+            "correctness_field": "responses",
+            "artifact_dir": "${split_root}/assist2009_class3"
+          }
+        },
+        {
+          "class": "kt_unlearn.data.KTDataSplitterTrainRetainTest",
+          "parameters": {
+            "parts_names": [
+              "retain",
+              "test"
+            ],
+            "source_partition_name": "other_users",
+            "retain_partition_name": "retain",
+            "test_partition_name": "test",
+            "mode": "ratio",
+            "retain_ratio": 0.8,
+            "user_id_field": "uid",
+            "correctness_field": "responses",
+            "seed": 42,
+            "user_level_split": true,
+            "artifact_dir": "${split_root}/assist2009_class3_retain_test"
+          }
+        }
+      ],
+      "batch_size": 16
+    }
+  },
+  "predictor": {
+    "class": "kt_unlearn.model.KTModel.KTModel",
+    "parameters": {
+      "epochs": 3,
+      "optimizer": {
+        "class": "torch.optim.Adam",
+        "parameters": {
+          "lr": 0.001
+        }
+      },
+      "loss_fn": {
+        "class": "kt_unlearn.model.KTModel.KTLoss",
+        "parameters": {}
+      },
+      "model": {
+        "class": "kt_unlearn.model.KTModel.DKTSequenceModel",
+        "parameters": {
+          "emb_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "training_set": "retain"
+    }
+  },
+  "unlearners": [
+    {
+      "class": "kt_unlearn.unlearners.GoldModel.GoldModel",
+      "parameters": {
+        "training_set": "retain",
+        "cached": false
+      }
+    }
+  ],
+  "evaluator": {
+    "class": "erasure.evaluations.manager.Evaluator",
+    "parameters": {
+      "measures": [
+        {
+          "class": "erasure.evaluations.running.ChainOfRunners",
+          "parameters": {
+            "runners": [
+              "erasure.evaluations.running.TorchFlops",
+              "erasure.evaluations.running.RunTime"
+            ]
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTAUS",
+          "parameters": {
+            "forget_part": "forget",
+            "test_part": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTRelearnTime",
+          "parameters": {
+            "forget_part": "forget",
+            "max_epochs": 8
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTAIN",
+          "parameters": {
+            "alpha": 0.05,
+            "forget_part": "forget",
+            "max_epochs": 8
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTUMIA",
+          "parameters": {
+            "member_part": "forget",
+            "nonmember_part": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTNoMUS",
+          "parameters": {
+            "l": 0.5,
+            "acc_split": "test",
+            "member_part": "forget",
+            "nonmember_part": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTPartitionInfo",
+          "parameters": {
+            "partition": "forget"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTPartitionInfo",
+          "parameters": {
+            "partition": "retain"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTPartitionInfo",
+          "parameters": {
+            "partition": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "test",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "test",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "forget",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "forget",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "retain",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "retain",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTSaveValues",
+          "parameters": {
+            "path": "${results_root}/assist2009_class3_forget_erasure_bridge.csv",
+            "output_format": "csv",
+            "exclude_prefixes": [
+              "parameters"
+            ],
+            "column_order": [
+              "unlearner",
+              "dataset",
+              "RunTime",
+              "TorchFlops",
+              "PeakRSS_MB",
+              "CudaPeak_MB",
+              "AUS",
+              "RelearnTime",
+              "RelearnInteractions",
+              "AIN",
+              "AIN_unlearned_interactions",
+              "AIN_gold_interactions",
+              "UMIA",
+              "UMIA_AUC",
+              "UMIA_threshold",
+              "UMIA_threshold_AUC",
+              "NoMUS",
+              "sklearn.metrics.accuracy_score.test.original",
+              "sklearn.metrics.accuracy_score.test.unlearned",
+              "sklearn.metrics.accuracy_score.forget.original",
+              "sklearn.metrics.accuracy_score.forget.unlearned",
+              "sklearn.metrics.accuracy_score.retain.original",
+              "sklearn.metrics.accuracy_score.retain.unlearned",
+              "kt.loss.test.original",
+              "kt.acc.test.original",
+              "kt.auc.test.original",
+              "kt.loss.test.unlearned",
+              "kt.acc.test.unlearned",
+              "kt.auc.test.unlearned",
+              "kt.loss.forget.original",
+              "kt.acc.forget.original",
+              "kt.auc.forget.original",
+              "kt.loss.forget.unlearned",
+              "kt.acc.forget.unlearned",
+              "kt.auc.forget.unlearned",
+              "kt.loss.retain.original",
+              "kt.acc.retain.original",
+              "kt.auc.retain.original",
+              "kt.loss.retain.unlearned",
+              "kt.acc.retain.unlearned",
+              "kt.auc.retain.unlearned",
+              "part_info.forget.name",
+              "part_info.forget.size",
+              "part_info.forget.sequence_count",
+              "part_info.forget.user_count",
+              "part_info.forget.interaction_count",
+              "part_info.forget.mean_correctness",
+              "part_info.forget.mean_interactions_per_sequence",
+              "part_info.retain.name",
+              "part_info.retain.size",
+              "part_info.retain.sequence_count",
+              "part_info.retain.user_count",
+              "part_info.retain.interaction_count",
+              "part_info.retain.mean_correctness",
+              "part_info.retain.mean_interactions_per_sequence",
+              "part_info.test.name",
+              "part_info.test.size",
+              "part_info.test.sequence_count",
+              "part_info.test.user_count",
+              "part_info.test.interaction_count",
+              "part_info.test.mean_correctness",
+              "part_info.test.mean_interactions_per_sequence"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "globals": {
+    "cached": "false",
+    "seed": 42,
+    "results_root": "output/runs/erasure",
+    "split_root": "${results_root}/splits"
+  }
+}

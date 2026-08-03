@@ -1,0 +1,116 @@
+{
+  "evaluator": {
+    "class": "erasure.evaluations.manager.Evaluator",
+    "parameters": {
+      "measures": [
+        {
+          "class": "erasure.evaluations.running.ChainOfRunners",
+          "parameters": {
+            "runners": [
+              "erasure.evaluations.running.TorchFlops",
+              "erasure.evaluations.running.RunTime"
+            ]
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTAUS",
+          "parameters": {
+            "forget_part": "forget",
+            "test_part": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTRelearnTime",
+          "parameters": {
+            "forget_part": "forget",
+            "max_epochs": 8
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTAIN",
+          "parameters": {
+            "alpha": 0.05,
+            "forget_part": "forget",
+            "max_epochs": 8
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTUMIA",
+          "parameters": {
+            "member_part": "forget",
+            "nonmember_part": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTNoMUS",
+          "parameters": {
+            "l": 0.5,
+            "acc_split": "test",
+            "member_part": "forget",
+            "nonmember_part": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTPartitionInfo",
+          "parameters": {
+            "partition": "forget"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTPartitionInfo",
+          "parameters": {
+            "partition": "retain"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTPartitionInfo",
+          "parameters": {
+            "partition": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "test",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "test",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "forget",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "forget",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "retain",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.erasure_bridge.KTTorchSKLearn",
+          "parameters": {
+            "partition": "retain",
+            "target": "unlearned"
+          }
+        }
+      ]
+    }
+  }
+}

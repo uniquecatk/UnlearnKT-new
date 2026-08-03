@@ -1,0 +1,131 @@
+{
+  "evaluator": {
+    "class": "kt_unlearn.evaluations.manager.Evaluator",
+    "parameters": {
+      "measures": [
+        {
+          "class": "kt_unlearn.evaluations.running.RunTime"
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTAUS",
+          "parameters": {
+            "forget_part": "forget",
+            "test_part": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTRelearnTime",
+          "parameters": {
+            "forget_part": "forget",
+            "max_epochs": 8
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTAIN",
+          "parameters": {
+            "alpha": 0.05,
+            "forget_part": "forget",
+            "max_epochs": 8
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTUMIA",
+          "parameters": {
+            "member_part": "forget",
+            "nonmember_part": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTNoMUS",
+          "parameters": {
+            "l": 0.5,
+            "acc_split": "test",
+            "member_part": "forget",
+            "nonmember_part": "test"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "test",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "test",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "forget",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "forget",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "retain",
+            "target": "original"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.kt_measures.KTMetrics",
+          "parameters": {
+            "partition": "retain",
+            "target": "unlearned"
+          }
+        },
+        {
+          "class": "kt_unlearn.evaluations.measures.SaveValues",
+          "parameters": {
+            "path": "output/runs/kt/examples/assist2009_full_eval.csv",
+            "output_format": "csv",
+            "exclude_prefixes": [
+              "parameters"
+            ],
+            "column_order": [
+              "unlearner",
+              "dataset",
+              "RunTime",
+              "AUS",
+              "RelearnTime",
+              "AIN",
+              "UMIA",
+              "UMIA_AUC",
+              "NoMUS",
+              "kt.loss.test.original",
+              "kt.acc.test.original",
+              "kt.auc.test.original",
+              "kt.loss.test.unlearned",
+              "kt.acc.test.unlearned",
+              "kt.auc.test.unlearned",
+              "kt.loss.forget.original",
+              "kt.acc.forget.original",
+              "kt.auc.forget.original",
+              "kt.loss.forget.unlearned",
+              "kt.acc.forget.unlearned",
+              "kt.auc.forget.unlearned",
+              "kt.loss.retain.original",
+              "kt.acc.retain.original",
+              "kt.auc.retain.original",
+              "kt.loss.retain.unlearned",
+              "kt.acc.retain.unlearned",
+              "kt.auc.retain.unlearned"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "compose_kt_eval": "configs/snippets/kt_demo_evaluation.json",
+  "data": {
+    "class": "kt_unlearn.data.datasets.DatasetManager.DatasetManager",
+    "parameters": {
+      "DataSource": {
+        "class": "kt_unlearn.data.data_sources.KTFileDataSource.KTFileDataSource",
+        "parameters": {
+          "path": "data/demo/assist2009_demo_sequences.csv",
+          "max_seq_len": 100,
+          "pad_val": -1
+        }
+      },
+      "partitions": [
+        {
+          "class": "kt_unlearn.data.datasets.KTDataSplitter.KTDataSplitterByFold",
+          "parameters": {
+            "parts_names": [
+              "train",
+              "not_train"
+            ],
+            "fold_values": [
+              0
+            ]
+          }
+        },
+        {
+          "class": "kt_unlearn.data.datasets.KTDataSplitter.KTDataSplitterByFold",
+          "parameters": {
+            "parts_names": [
+              "valid",
+              "not_valid"
+            ],
+            "fold_values": [
+              5
+            ]
+          }
+        },
+        {
+          "class": "kt_unlearn.data.datasets.KTDataSplitter.KTDataSplitterByFold",
+          "parameters": {
+            "parts_names": [
+              "test",
+              "not_test"
+            ],
+            "fold_values": [
+              -1
+            ]
+          }
+        },
+        {
+          "class": "kt_unlearn.data.datasets.DataSplitter.DataSplitterPercentage",
+          "parameters": {
+            "parts_names": [
+              "forget",
+              "retain"
+            ],
+            "percentage": 0.1,
+            "ref_data": "train",
+            "shuffle": true
+          }
+        }
+      ],
+      "batch_size": 16
+    }
+  },
+  "predictor": {
+    "class": "kt_unlearn.model.KTModel.KTModel",
+    "parameters": {
+      "epochs": 3,
+      "optimizer": {
+        "class": "torch.optim.Adam",
+        "parameters": {
+          "lr": 0.001
+        }
+      },
+      "loss_fn": {
+        "class": "kt_unlearn.model.KTModel.KTLoss",
+        "parameters": {}
+      },
+      "model": {
+        "class": "kt_unlearn.model.KTModel.DKTSequenceModel",
+        "parameters": {
+          "emb_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "training_set": "train"
+    }
+  },
+  "unlearners": [
+    {
+      "class": "kt_unlearn.unlearners.GoldModel.GoldModel",
+      "parameters": {
+        "training_set": "retain",
+        "cached": false
+      }
+    },
+    {
+      "class": "kt_unlearn.unlearners.Finetuning.Finetuning",
+      "parameters": {
+        "epochs": 2,
+        "ref_data": "retain",
+        "optimizer": {
+          "class": "torch.optim.Adam",
+          "parameters": {
+            "lr": 0.0005
+          }
+        }
+      }
+    },
+    {
+      "class": "kt_unlearn.unlearners.NegGrad.NegGrad",
+      "parameters": {
+        "epochs": 1,
+        "ref_data": "forget",
+        "optimizer": {
+          "class": "torch.optim.Adam",
+          "parameters": {
+            "lr": 0.0001
+          }
+        }
+      }
+    }
+  ],
+  "globals": {
+    "cached": "false",
+    "seed": 42
+  }
+}
