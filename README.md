@@ -40,9 +40,9 @@ The core paper method (`QEFU-KT`) is implemented in `src/kt_unlearn/unlearners/Q
 
 ### Dataset Preparation
 
-**Dataset source index:** [https://uniquecatk.github.io/UnlearnKT-new/](https://uniquecatk.github.io/UnlearnKT-new/)
+Dataset sources can be referenced here: [https://uniquecatk.github.io/UnlearnKT-new/](https://uniquecatk.github.io/UnlearnKT-new/)
 
-For reviewers and readers, the recommended setup path is to directly download the prepared dataset files and extract them into:
+For reviewers and readers, the recommended setup path is to directly download the prepared dataset files from [Google Drive](https://drive.google.com/drive/folders/14ZLY7B_Tgs8k82qW3eQD7ufcHh0Bq50W) and extract them into:
 
 `data/processed_datasets/`
 
