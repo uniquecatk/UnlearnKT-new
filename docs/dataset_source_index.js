@@ -1,6 +1,3 @@
-const PROCESSED_PACKAGE_URL =
-  "https://drive.google.com/drive/folders/14ZLY7B_Tgs8k82qW3eQD7ufcHh0Bq50W";
-
 const DATASETS = [
   {
     name: "ASSIST2009",
@@ -123,7 +120,6 @@ const FIELD_MEANING = {
   dataset: "Dataset name and its role in this repository.",
   local_folder: "Folder name expected under data/processed_datasets/.",
   official_source: "Official dataset landing page or source project page.",
-  processed_package: "Prepared package entrance for quick setup.",
   setup_notes: "Where to place the downloaded files before running experiments.",
 };
 
@@ -153,14 +149,6 @@ const paperOnlyToggle = document.getElementById("paper-only-toggle");
 const datasetCount = document.getElementById("dataset-count");
 const tooltip = document.getElementById("tooltip");
 
-function renderPackageLink(url, label) {
-  if (!url || url.startsWith("REPLACE_WITH_")) {
-    return '<span class="muted">Replace placeholder with your package link</span>';
-  }
-
-  return `<a href="${url}" target="_blank" rel="noreferrer">${label}</a>`;
-}
-
 function renderRows(paperOnly = false) {
   const visible = sortedDatasets.filter((item) => !paperOnly || item.usedInPaper);
 
@@ -181,7 +169,6 @@ function renderRows(paperOnly = false) {
           <td class="left">
             <a href="${item.sourceUrl}" target="_blank" rel="noreferrer">${item.sourceLabel}</a>
           </td>
-          <td>${renderPackageLink(PROCESSED_PACKAGE_URL, "Download processed package")}</td>
           <td class="left">
             ${item.preprocessNotes}
             <div class="note-pill">${item.usedInPaper ? "Used in paper" : "Additional dataset"}</div>
