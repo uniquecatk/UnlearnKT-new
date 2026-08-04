@@ -1,4 +1,4 @@
-﻿import os
+import os
 import json
 import platform
 import numpy as np
@@ -8,64 +8,66 @@ from kt_lib.utils.data_io import read_csv, read_json, write_json
 
 
 class FileManager:
+    raw_data_root = os.path.join("data", "raw_datasets")
+    preprocessed_data_root = os.path.join("data", "processed_datasets")
     dataset_raw_path = {
-        "assist2009": "dataset/dataset_raw/assist2009/skill_builder_data.csv",
-        "assist2009-full": "dataset/dataset_raw/assist2009-full/assistments_2009_2010.csv",
-        "assist2012": "dataset/dataset_raw/assist2012/2012-2013-data-with-predictions-4-final.csv",
-        "assist2015": "dataset/dataset_raw/assist2015/2015_100_skill_builders_main_problems.csv",
-        "assist2017": "dataset/dataset_raw/assist2017/anonymized_full_release_competition_dataset.csv",
-        "edi2020-task1": "dataset/dataset_raw/edi2020",
-        "edi2020-task34": "dataset/dataset_raw/edi2020",
-        "edi2022": "dataset/dataset_raw/edi2022",
-        "SLP-bio": "dataset/dataset_raw/SLP",
-        "SLP-chi": "dataset/dataset_raw/SLP",
-        "SLP-eng": "dataset/dataset_raw/SLP",
-        "SLP-mat": "dataset/dataset_raw/SLP",
-        "SLP-his": "dataset/dataset_raw/SLP",
-        "SLP-geo": "dataset/dataset_raw/SLP",
-        "SLP-phy": "dataset/dataset_raw/SLP",
-        "slepemapy-anatomy": "dataset/dataset_raw/slepemapy-anatomy/answers.csv",
-        "statics2011": "dataset/dataset_raw/statics2011/AllData_student_step_2011F.csv",
-        "ednet-kt1": "dataset/dataset_raw/ednet-kt1",
-        "xes3g5m": "dataset/dataset_raw/xes3g5m",
-        "DBE-KT22": "dataset/dataset_raw/DBE-KT22",
-        "algebra2005": "dataset/dataset_raw/kdd_cup2010",
-        "algebra2006": "dataset/dataset_raw/kdd_cup2010",
-        "algebra2008": "dataset/dataset_raw/kdd_cup2010",
-        "bridge2algebra2006": "dataset/dataset_raw/kdd_cup2010",
-        "bridge2algebra2008": "dataset/dataset_raw/kdd_cup2010",
-        "junyi2015": "dataset/dataset_raw/junyi2015",
-        "poj": "dataset/dataset_raw/poj/poj_log.csv"
+        "assist2009": os.path.join(raw_data_root, "assist2009", "skill_builder_data.csv"),
+        "assist2009-full": os.path.join(raw_data_root, "assist2009-full", "assistments_2009_2010.csv"),
+        "assist2012": os.path.join(raw_data_root, "assist2012", "2012-2013-data-with-predictions-4-final.csv"),
+        "assist2015": os.path.join(raw_data_root, "assistments15", "2015_100_skill_builders_main_problems.csv"),
+        "assist2017": os.path.join(raw_data_root, "assistments17", "anonymized_full_release_competition_dataset.csv"),
+        "edi2020-task1": os.path.join(raw_data_root, "edi2020", "Task_1"),
+        "edi2020-task34": os.path.join(raw_data_root, "edi2020", "Task_3_4"),
+        "edi2022": os.path.join(raw_data_root, "edi2022"),
+        "SLP-bio": os.path.join(raw_data_root, "SLP"),
+        "SLP-chi": os.path.join(raw_data_root, "SLP"),
+        "SLP-eng": os.path.join(raw_data_root, "SLP"),
+        "SLP-mat": os.path.join(raw_data_root, "SLP"),
+        "SLP-his": os.path.join(raw_data_root, "SLP"),
+        "SLP-geo": os.path.join(raw_data_root, "SLP"),
+        "SLP-phy": os.path.join(raw_data_root, "SLP"),
+        "slepemapy-anatomy": os.path.join(raw_data_root, "slepemapy-anatomy", "answers.csv"),
+        "statics2011": os.path.join(raw_data_root, "statics2011", "AllData_student_step_2011F.csv"),
+        "ednet-kt1": os.path.join(raw_data_root, "ednet-kt1"),
+        "xes3g5m": os.path.join(raw_data_root, "xes3g5m"),
+        "DBE-KT22": os.path.join(raw_data_root, "DBE-KT22"),
+        "algebra2005": os.path.join(raw_data_root, "kdd_cup2010"),
+        "algebra2006": os.path.join(raw_data_root, "kdd_cup2010"),
+        "algebra2008": os.path.join(raw_data_root, "kdd_cup2010"),
+        "bridge2algebra2006": os.path.join(raw_data_root, "kdd_cup2010"),
+        "bridge2algebra2008": os.path.join(raw_data_root, "kdd_cup2010"),
+        "junyi2015": os.path.join(raw_data_root, "junyi2015"),
+        "poj": os.path.join(raw_data_root, "poj", "poj_log.csv")
     }
 
     data_preprocessed_dir = {
-        "assist2009": "dataset/dataset_preprocessed/assist2009",
-        "assist2009-full": "dataset/dataset_preprocessed/assist2009-full",
-        "assist2012": "dataset/dataset_preprocessed/assist2012",
-        "assist2015": "dataset/dataset_preprocessed/assist2015",
-        "assist2017": "dataset/dataset_preprocessed/assist2017",
-        "edi2020-task1": "dataset/dataset_preprocessed/edi2020-task1",
-        "edi2020-task34": "dataset/dataset_preprocessed/edi2020-task34",
-        "edi2022": "dataset/dataset_preprocessed/edi2020",
-        "SLP-bio": "dataset/dataset_preprocessed/SLP-bio",
-        "SLP-chi": "dataset/dataset_preprocessed/SLP-chi",
-        "SLP-eng": "dataset/dataset_preprocessed/SLP-eng",
-        "SLP-mat": "dataset/dataset_preprocessed/SLP-mat",
-        "SLP-his": "dataset/dataset_preprocessed/SLP-his",
-        "SLP-geo": "dataset/dataset_preprocessed/SLP-geo",
-        "SLP-phy": "dataset/dataset_preprocessed/SLP-phy",
-        "statics2011": "dataset/dataset_preprocessed/statics2011",
-        "ednet-kt1": "dataset/dataset_preprocessed/ednet-kt1",
-        "junyi2015": "dataset/dataset_preprocessed/junyi2015",
-        "poj": "dataset/dataset_preprocessed/poj",
-        "slepemapy-anatomy": "dataset/dataset_preprocessed/slepemapy-anatomy",
-        "xes3g5m": "dataset/dataset_preprocessed/xes3g5m",
-        "algebra2005": "dataset/dataset_preprocessed/algebra2005",
-        "algebra2006": "dataset/dataset_preprocessed/algebra2006",
-        "algebra2008": "dataset/dataset_preprocessed/algebra2008",
-        "bridge2algebra2006": "dataset/dataset_preprocessed/bridge2algebra2006",
-        "bridge2algebra2008": "dataset/dataset_preprocessed/bridge2algebra2008",
-        "DBE-KT22": "dataset/dataset_preprocessed/DBE-KT22"
+        "assist2009": os.path.join(preprocessed_data_root, "ASSIST2009"),
+        "assist2009-full": os.path.join(preprocessed_data_root, "assist2009-full"),
+        "assist2012": os.path.join(preprocessed_data_root, "assist2012"),
+        "assist2015": os.path.join(preprocessed_data_root, "assistments15"),
+        "assist2017": os.path.join(preprocessed_data_root, "assistments17"),
+        "edi2020-task1": os.path.join(preprocessed_data_root, "edi2020-task1"),
+        "edi2020-task34": os.path.join(preprocessed_data_root, "edi2020-task34"),
+        "edi2022": os.path.join(preprocessed_data_root, "edi2022"),
+        "SLP-bio": os.path.join(preprocessed_data_root, "SLP-bio"),
+        "SLP-chi": os.path.join(preprocessed_data_root, "SLP-chi"),
+        "SLP-eng": os.path.join(preprocessed_data_root, "SLP-eng"),
+        "SLP-mat": os.path.join(preprocessed_data_root, "SLP-mat"),
+        "SLP-his": os.path.join(preprocessed_data_root, "SLP-his"),
+        "SLP-geo": os.path.join(preprocessed_data_root, "SLP-geo"),
+        "SLP-phy": os.path.join(preprocessed_data_root, "SLP-phy"),
+        "statics2011": os.path.join(preprocessed_data_root, "statics2011"),
+        "ednet-kt1": os.path.join(preprocessed_data_root, "ednet-kt1"),
+        "junyi2015": os.path.join(preprocessed_data_root, "junyi2015"),
+        "poj": os.path.join(preprocessed_data_root, "poj"),
+        "slepemapy-anatomy": os.path.join(preprocessed_data_root, "slepemapy-anatomy"),
+        "xes3g5m": os.path.join(preprocessed_data_root, "xes3g5m"),
+        "algebra2005": os.path.join(preprocessed_data_root, "algebra2005"),
+        "algebra2006": os.path.join(preprocessed_data_root, "algebra2006"),
+        "algebra2008": os.path.join(preprocessed_data_root, "algebra2008"),
+        "bridge2algebra2006": os.path.join(preprocessed_data_root, "bridge2algebra2006"),
+        "bridge2algebra2008": os.path.join(preprocessed_data_root, "bridge2algebra2008"),
+        "DBE-KT22": os.path.join(preprocessed_data_root, "DBE-KT22")
     }
 
     setting_dir = "dataset/settings"
@@ -75,70 +77,29 @@ class FileManager:
         self.root_dir = root_dir
         if init_dirs:
             self.create_dirs()
-        dirs = os.listdir(os.path.join(self.get_root_dir(), "dataset", "dataset_preprocessed"))
-        self.builtin_datasets = []
-        for d in dirs:
-            if os.path.isdir(os.path.join(self.get_root_dir(), "dataset", "dataset_preprocessed", d)):
-                self.builtin_datasets.append(d)
+        self.builtin_datasets = sorted(FileManager.data_preprocessed_dir.keys())
 
     def create_dirs(self):
         assert os.path.exists(self.root_dir), f"{self.root_dir} not exist"
-        all_dirs = [
+        all_dirs = {
+            os.path.join(self.root_dir, "data"),
+            os.path.join(self.root_dir, FileManager.raw_data_root),
+            os.path.join(self.root_dir, FileManager.preprocessed_data_root),
+            os.path.join(self.root_dir, "data", "demo"),
             os.path.join(self.root_dir, "dataset"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "assist2009"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "assist2009-full"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "assist2012"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "assist2015"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "assist2017"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "edi2020"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "edi2022"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "statics2011"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "junyi2015"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "ednet-kt1"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "kdd_cup2010"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "SLP"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "slepemapy-anatomy"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "xes3g5m"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "poj"),
-            os.path.join(self.root_dir, "dataset", "dataset_raw", "DBE-KT22"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "assist2009"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "assist2009-full"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "assist2012"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "assist2015"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "assist2017"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "statics2011"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "edi2020-task1"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "edi2020-task34"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "junyi2015"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "ednet-kt1"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "SLP-bio"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "SLP-chi"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "SLP-eng"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "SLP-his"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "SLP-mat"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "SLP-geo"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "SLP-phy"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "slepemapy-anatomy"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "xes3g5m"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "algebra2005"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "algebra2006"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "algebra2008"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "bridge2algebra2006"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "bridge2algebra2008"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "poj"),
-            os.path.join(self.root_dir, "dataset", "dataset_preprocessed", "DBE-KT22"),
             os.path.join(self.root_dir, "dataset", "settings"),
             os.path.join(self.root_dir, "dataset", "saved_models"),
-        ]
+        }
+        for relative_path in FileManager.dataset_raw_path.values():
+            all_dirs.add(os.path.dirname(os.path.join(self.root_dir, relative_path)))
+        for relative_path in FileManager.data_preprocessed_dir.values():
+            all_dirs.add(os.path.join(self.root_dir, relative_path))
         if platform.system() == "Windows":
             all_dirs = list(sorted(all_dirs, key=lambda dir_str: len(dir_str.split("\\"))))
         else:
             all_dirs = list(sorted(all_dirs, key=lambda dir_str: len(dir_str.split("/"))))
         for dir_ in all_dirs:
-            if not os.path.exists(dir_):
-                os.mkdir(dir_)
+            os.makedirs(dir_, exist_ok=True)
 
     def get_root_dir(self):
         return self.root_dir
@@ -149,9 +110,8 @@ class FileManager:
     # ==================================================================================================================
     def get_preprocessed_dir(self, dataset_name):
         if not FileManager.data_preprocessed_dir.get(dataset_name, False):
-            return os.path.join(self.root_dir, f"dataset/dataset_preprocessed/{dataset_name}")
-        else:
-            return os.path.join(self.root_dir, FileManager.data_preprocessed_dir[dataset_name])
+            return os.path.join(self.root_dir, FileManager.preprocessed_data_root, dataset_name)
+        return os.path.join(self.root_dir, FileManager.data_preprocessed_dir[dataset_name])
 
     def save_q_table(self, Q_table, dataset_name):
         preprocessed_dir = self.get_preprocessed_dir(dataset_name)

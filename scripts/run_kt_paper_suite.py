@@ -26,10 +26,10 @@ DATASET_LABELS = {
 }
 
 DATASET_SOURCES = {
-    "assist2009": FRAMEWORK_ROOT / "data" / "processed_datasets" / "ASSIST2009" / "skill_builder_data.csv",
-    "assistments12": None,
-    "assistments15": None,
-    "assistments17": None,
+    "assist2009": FRAMEWORK_ROOT / "output" / "runs" / "kt" / "pyedmine_converted" / "assist2009_sequences.csv",
+    "assistments12": FRAMEWORK_ROOT / "output" / "runs" / "kt" / "pyedmine_converted" / "assist2012_sequences.csv",
+    "assistments15": FRAMEWORK_ROOT / "output" / "runs" / "kt" / "pyedmine_converted" / "assistments15_sequences.csv",
+    "assistments17": FRAMEWORK_ROOT / "output" / "runs" / "kt" / "pyedmine_converted" / "assistments17_sequences.csv",
 }
 
 STRATEGY_SPECS = {
@@ -116,9 +116,7 @@ def _full_eval_enabled(args: argparse.Namespace) -> bool:
 
 
 def _prepared_input(dataset_name: str, output_root: Path) -> Path:
-    if dataset_name == "assist2009":
-        return DATASET_SOURCES["assist2009"]
-    return run_batch.build_fold_csv(dataset_name, output_root)
+    return DATASET_SOURCES[dataset_name]
 
 
 def combo_params(dataset_name: str, model_name: str) -> dict[str, Any]:

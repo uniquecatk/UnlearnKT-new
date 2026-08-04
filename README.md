@@ -42,94 +42,133 @@ The core paper method (`QEFU-KT`) is implemented in `src/kt_unlearn/unlearners/Q
 
 Dataset sources can be referenced here: [https://uniquecatk.github.io/UnlearnKT-new/](https://uniquecatk.github.io/UnlearnKT-new/)
 
-For reviewers and readers, the recommended setup path is to directly download the prepared dataset files from [Google Drive](https://drive.google.com/drive/folders/14ZLY7B_Tgs8k82qW3eQD7ufcHh0Bq50W) and extract them into:
+This repository now uses one unified KT data chain:
 
-`data/processed_datasets/`
+`official raw data -> PyEdmine-style preprocessing in this repo -> data/processed_datasets -> kt_dataset_bridge.py -> sequence csv -> experiments`
 
-The data directory layout used by the current repository is:
+Choose one setup path only.
+
+#### Path A. Directly Use Prepared Dataset Zip Packages
+
+Recommended for `assist2009`, `assist2012`, `assistments15`, `assistments17`, and `statics2011`.
+
+- Place the zip files under `data/processed_datasets_zip/`
+- Extract them into `data/processed_datasets/`
+- Run `scripts/kt_dataset_bridge.py`
+- Start experiments
+
+Before extraction, the folder layout under `data/` should look like this:
 
 ```text
 data/
-├── demo/
-│   └── assist2009_demo_sequences.csv
+└── processed_datasets_zip/
+    ├── assist2009-*.zip
+    ├── assist2012-*.zip
+    ├── assist2017-*.zip
+    ├── assistments15.zip
+    └── statics2011-*.zip
+```
+
+After extraction, `data/processed_datasets/` should look like this:
+
+```text
+data/
 └── processed_datasets/
-    ├── ASSIST2009/
-    │   └── skill_builder_data.csv
+    ├── assist2009/
     ├── assist2012/
-    │   ├── data.txt
-    │   ├── Q_table.npy
-    │   └── *_map.csv
-    ├── assistments15/
-    │   ├── preprocessed_data.csv
-    │   ├── preprocessed_data_train.csv
-    │   └── preprocessed_data_test.csv
-    ├── assistments17/
-    │   ├── preprocessed_data.csv
-    │   ├── preprocessed_data_train.csv
-    │   └── preprocessed_data_test.csv
+    ├── assist2015/
+    ├── assist2017/
     ├── statics2011/
-    │   ├── data.txt
-    │   ├── Q_table.npy
-    │   └── *_map.csv
-    └── ednet-kt1/
+    ├── ...
+    └── <dataset-folder>/
         ├── data.txt
         ├── Q_table.npy
+        ├── statics_raw.json
+        ├── statics_preprocessed.json
         └── *_map.csv
 ```
 
-For the paper experiments provided in this repository, no separate preprocessing or dataset splitting step is required at runtime. Download the prepared dataset files, place them under `data/processed_datasets/`, and then run the provided experiment scripts directly.
+For `ednet-kt1`, keep using [Google Drive](https://drive.google.com/drive/folders/14ZLY7B_Tgs8k82qW3eQD7ufcHh0Bq50W) or a GitHub Release asset, then extract it into `data/processed_datasets/ednet-kt1/`.
+
+Commands for Path A:
+
+```bash
+python scripts/kt_dataset_bridge.py convert --dataset-name assist2009
+python scripts/kt_dataset_bridge.py convert --dataset-name assist2012
+python scripts/kt_dataset_bridge.py convert --dataset-name assistments15
+python scripts/kt_dataset_bridge.py convert --dataset-name assistments17
+python scripts/kt_dataset_bridge.py convert --dataset-name statics2011
+python scripts/kt_dataset_bridge.py convert --dataset-name ednet-kt1
+```
+
+#### Path B. Prepare from Official Raw Data
+
+- Place the raw dataset files under `data/raw_datasets/`
+- Run `scripts/prepare_pyedmine_dataset.py`
+- Then run `scripts/kt_dataset_bridge.py`
+
+The folder layout under `data/` should be:
+
+```text
+data/
+├── raw_datasets/
+│   ├── assist2009/
+│   │   └── skill_builder_data.csv
+│   ├── assist2012/
+│   │   └── 2012-2013-data-with-predictions-4-final.csv
+│   ├── assistments15/
+│   │   └── 2015_100_skill_builders_main_problems.csv
+│   ├── assistments17/
+│   │   └── anonymized_full_release_competition_dataset.csv
+│   ├── statics2011/
+│   │   └── AllData_student_step_2011F.csv
+│   └── ednet-kt1/
+│       └── users_*.csv
+```
+
+Commands for Path B:
+
+```bash
+python scripts/prepare_pyedmine_dataset.py preprocess --dataset-name assist2009 --run-bridge
+python scripts/prepare_pyedmine_dataset.py preprocess --dataset-name assist2012 --run-bridge
+python scripts/prepare_pyedmine_dataset.py preprocess --dataset-name assistments15 --run-bridge
+python scripts/prepare_pyedmine_dataset.py preprocess --dataset-name assistments17 --run-bridge
+python scripts/prepare_pyedmine_dataset.py preprocess --dataset-name statics2011 --run-bridge
+```
+
+For EdNet-KT1, first aggregate the raw user logs and then run preprocessing:
+
+```bash
+python scripts/prepare_pyedmine_dataset.py prepare-ednet-raw --dataset-src-dir <EdNet-KT1-user-dir> --contents-dir <EdNet-contents-dir>
+python scripts/prepare_pyedmine_dataset.py preprocess --dataset-name ednet-kt1 --run-bridge
+```
+
+The bridge outputs the final experiment inputs here:
+
+```text
+output/runs/kt/pyedmine_converted/
+├── assist2009_sequences.csv
+├── assistments15_sequences.csv
+├── assistments17_sequences.csv
+├── assist2012_sequences.csv
+├── statics2011_sequences.csv
+└── ednet-kt1_sequences.csv
+```
 
 ---
 
 ## Dataset Format
 
-This repository expects the prepared dataset files to be placed directly in the local data directories before running experiments.
+The runtime input of this repository is the sequence CSV generated by `scripts/kt_dataset_bridge.py`.
 
-### Layer 1: Local Data Folders
-
-These folders live under `data/processed_datasets/` and are read directly by the experiment scripts.
-
-#### 1) Row-table format
-
-Datasets: `ASSIST2009`, `assistments12`, `assistments15`, `assistments17`, `algebra05`, `bridge_algebra06`, `spanish`, `statics`
-
-Common files:
-- `skill_builder_data.csv` or `preprocessed_data.csv`
-- `preprocessed_data_train.csv` / `preprocessed_data_test.csv`
-- `q_mat.npz` for datasets that provide a Q-matrix
-
-Common row-level columns in the prepared files:
-- `user_id` or `uid`
-- `item_id`, `problem_id`, or `question_id`
-- `correct`, `response`, or `is_correct`
-- optional: `skill_id`, `timestamp`
-
-#### 2) Text-based processed format
-
-Datasets: `assist2012`, `statics2011`, `ednet-kt1`
-
-Each dataset directory contains:
-- `data.txt` — tab-separated file with columns:
-  - Column 0: number of interactions in the sequence
-  - Column 1: space-separated question IDs
-  - Column 2: space-separated correctness values (0/1)
-- `Q_table.npy` — Q-matrix (questions × concepts)
-- `*_map.csv` — ID mapping files (user, question, concept)
-
-These text-based folders should be provided in their benchmark-ready form inside the prepared dataset package.
-
-### Layer 2: Sequence CSV for Direct Runs
-
-Direct JSONC runs use a compact sequence CSV such as `data/demo/assist2009_demo_sequences.csv`.
-
-Required columns:
+Required columns are:
 - `uid` — user ID
 - `questions` — comma-separated question ID sequence
 - `responses` — comma-separated correctness sequence
 - `fold` — split indicator
 - `concepts` — optional comma-separated concept ID sequence
 
-The framework's `KTFileDataSource` in `src/kt_unlearn/data/data_sources/KTFileDataSource.py` reads this compact sequence format directly.
+The framework's `KTFileDataSource` in `src/kt_unlearn/data/data_sources/KTFileDataSource.py` reads this format directly. `data/processed_datasets/` stores the intermediate PyEdmine-style outputs, while `output/runs/kt/pyedmine_converted/` stores the final sequence CSV files consumed by the experiment runners.
 
 ---
 
@@ -161,7 +200,7 @@ Six public KT datasets of varying scale (from ~3K to ~900K interactions):
 | `statics2011` | STATICS2011 | ~360K |
 | `ednet-kt1` | EdNet-KT1 | ~100M |
 
-Each dataset should be prepared locally under `data/processed_datasets/`, and the corresponding JSONC config points to the required CSV or text file (see [Dataset Format](#dataset-format)).
+Each dataset should be prepared locally under `data/processed_datasets/` and converted into sequence CSV files under `output/runs/kt/pyedmine_converted/` before launching the batch scripts.
 
 ### KT Model (`--models`)
 

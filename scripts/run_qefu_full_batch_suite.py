@@ -78,15 +78,15 @@ DATASET_LABELS = {
 DATASET_SPECS = {
     "assist2009": {
         "input_mode": "direct",
-        "path": FRAMEWORK_ROOT / "data" / "processed_datasets" / "ASSIST2009" / "skill_builder_data.csv",
+        "path": FRAMEWORK_ROOT / "output" / "runs" / "kt" / "pyedmine_converted" / "assist2009_sequences.csv",
     },
     "assistments15": {
-        "input_mode": "build_fold",
-        "dataset_key": "assistments15",
+        "input_mode": "direct",
+        "path": FRAMEWORK_ROOT / "output" / "runs" / "kt" / "pyedmine_converted" / "assistments15_sequences.csv",
     },
     "assistments17": {
-        "input_mode": "build_fold",
-        "dataset_key": "assistments17",
+        "input_mode": "direct",
+        "path": FRAMEWORK_ROOT / "output" / "runs" / "kt" / "pyedmine_converted" / "assistments17_sequences.csv",
     },
     "assist2012": {
         "input_mode": "direct",

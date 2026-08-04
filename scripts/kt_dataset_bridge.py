@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -15,17 +16,36 @@ SRC_ROOT = FRAMEWORK_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
+from kt_lib.data.FileManager import FileManager
 from kt_lib.utils.data_io import read_kt_file
 
 DATA_ROOT = FRAMEWORK_ROOT / "data" / "processed_datasets"
 CONVERTED_ROOT = FRAMEWORK_ROOT / "output" / "runs" / "kt" / "pyedmine_converted"
+FILE_MANAGER = FileManager(str(FRAMEWORK_ROOT), init_dirs=True)
+
+DATASET_ALIASES = {
+    "assistments12": "assist2012",
+    "assistments15": "assist2015",
+    "assistments17": "assist2017",
+}
+
+OUTPUT_DATASET_NAMES = {
+    "assistments12": "assist2012",
+    "assist2015": "assistments15",
+    "assistments15": "assistments15",
+    "assist2017": "assistments17",
+    "assistments17": "assistments17",
+}
 
 DATASET_DESCRIPTIONS = {
     "assist2009": "ASSISTments 2009 常用 KT 基准数据集",
     "assist2009-full": "ASSISTments 2009 全量版本",
     "assist2012": "ASSISTments 2012 常用基准",
+    "assistments12": "ASSISTments 2012 常用基准",
     "assist2015": "ASSISTments 2015 常用基准",
+    "assistments15": "ASSISTments 2015 常用基准",
     "assist2017": "ASSISTments 2017 常用基准",
+    "assistments17": "ASSISTments 2017 常用基准",
     "statics2011": "Statics2011 物理题目序列数据",
     "junyi2015": "Junyi Academy 2015 学习行为数据",
     "algebra2005": "KDD Cup 2010 Algebra 2005",
@@ -50,25 +70,49 @@ DATASET_DESCRIPTIONS = {
 }
 
 
+def _canonical_dataset_name(dataset_name: str) -> str:
+    return DATASET_ALIASES.get(dataset_name, dataset_name)
+
+
 def _dataset_names() -> list[str]:
-    if not DATA_ROOT.exists():
-        return []
-    return sorted([path.name for path in DATA_ROOT.iterdir() if path.is_dir()])
+    discovered = set()
+    if DATA_ROOT.exists():
+        discovered.update(path.name for path in DATA_ROOT.iterdir() if path.is_dir())
+    return sorted(set(FileManager.data_preprocessed_dir.keys()) | set(DATASET_ALIASES.keys()) | discovered)
 
 
 def _converted_path(dataset_name: str) -> Path:
-    return CONVERTED_ROOT / f"{dataset_name}_sequences.csv"
+    output_name = OUTPUT_DATASET_NAMES.get(dataset_name, dataset_name)
+    return CONVERTED_ROOT / f"{output_name}_sequences.csv"
 
 
 def _dataset_dir(dataset_name: str) -> Path:
-    direct = DATA_ROOT / dataset_name
-    if direct.exists():
-        return direct
-    lowered = dataset_name.lower()
-    for path in DATA_ROOT.iterdir():
-        if path.is_dir() and path.name.lower() == lowered:
-            return path
-    return direct
+    canonical_name = _canonical_dataset_name(dataset_name)
+    candidates: list[str] = []
+    for name in (
+        dataset_name,
+        canonical_name,
+        OUTPUT_DATASET_NAMES.get(dataset_name),
+        OUTPUT_DATASET_NAMES.get(canonical_name),
+    ):
+        if name and name not in candidates:
+            candidates.append(name)
+
+    if DATA_ROOT.exists():
+        existing_dirs = [path for path in DATA_ROOT.iterdir() if path.is_dir()]
+        for candidate in candidates:
+            direct = DATA_ROOT / candidate
+            if direct.exists():
+                return direct
+            lowered = candidate.lower()
+            for path in existing_dirs:
+                if path.name.lower() == lowered:
+                    return path
+
+    try:
+        return Path(FILE_MANAGER.get_preprocessed_dir(canonical_name))
+    except KeyError:
+        return DATA_ROOT / canonical_name
 
 
 def _detect_existing_files(dataset_name: str) -> dict[str, Path]:
@@ -107,16 +151,22 @@ def _path_has_payload(path: Path) -> bool:
 
 
 def get_dataset_status(dataset_name: str) -> dict[str, Any]:
+    canonical_name = _canonical_dataset_name(dataset_name)
     files = _detect_existing_files(dataset_name)
     dataset_dir = files["dataset_dir"]
-    raw_path = files["assist2009_full"]
+    try:
+        raw_path = Path(FILE_MANAGER.get_dataset_raw_path(canonical_name))
+    except KeyError:
+        raw_path = FRAMEWORK_ROOT / "data" / "raw_datasets" / canonical_name
     preprocessed_path = files["preprocessed"]
     train_path = files["train"]
     test_path = files["test"]
-    q_table_path = files["q_mat"]
+    q_table_path = files["q_mat"] if files["q_mat"].exists() else files["dataset_dir"] / "Q_table.npy"
     converted_path = _converted_path(dataset_name)
     return {
+        "requested_dataset_name": dataset_name,
         "dataset_name": dataset_name,
+        "canonical_dataset_name": canonical_name,
         "description": DATASET_DESCRIPTIONS.get(dataset_name, ""),
         "dataset_dir": dataset_dir,
         "raw_path": raw_path,
@@ -141,12 +191,52 @@ def list_dataset_statuses() -> list[dict[str, Any]]:
 
 
 def preprocess_dataset(dataset_name: str) -> dict[str, Any]:
-    return {
-        "action": "preprocess",
-        "dataset_name": dataset_name,
-        "message": "fin-1 打包的是已处理 KT 数据集。原始 pyedmine 预处理源码已保留在 src/kt_lib，但这里默认不再直接重跑原始全量预处理。",
-        "status": get_dataset_status(dataset_name),
-    }
+    proc = subprocess.run(
+        [sys.executable, str(APP_ROOT / "prepare_pyedmine_dataset.py"), "preprocess", "--dataset-name", dataset_name],
+        cwd=str(FRAMEWORK_ROOT),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if proc.returncode != 0:
+        message = proc.stderr.strip() or proc.stdout.strip() or "Dataset preprocessing failed."
+        raise RuntimeError(message)
+    return json.loads(proc.stdout)
+
+
+def _append_row_table_sequences(
+    df: pd.DataFrame,
+    rows: list[dict[str, Any]],
+    question_ids: set[int],
+    concept_ids: set[int],
+    fold: int,
+) -> None:
+    required = {"user_id", "item_id", "correct"}
+    if not required.issubset(df.columns):
+        raise ValueError(f"Expected columns {sorted(required)} in row-table source")
+
+    order_cols = [col for col in ["timestamp", "order_id"] if col in df.columns]
+    if order_cols:
+        df = df.sort_values(["user_id", *order_cols])
+
+    for uid, group in df.groupby("user_id", sort=False):
+        questions = [int(v) for v in group["item_id"].tolist()]
+        responses = [int(v) for v in group["correct"].tolist()]
+        if len(questions) < 2:
+            continue
+        row = {
+            "uid": str(uid),
+            "questions": ",".join(map(str, questions)),
+            "responses": ",".join(map(str, responses)),
+            "fold": fold,
+        }
+        if "skill_id" in group.columns:
+            concepts = [int(v) for v in group["skill_id"].tolist()]
+            row["concepts"] = ",".join(map(str, concepts))
+            concept_ids.update(concepts)
+        rows.append(row)
+        question_ids.update(questions)
 
 
 def convert_dataset(dataset_name: str) -> dict[str, Any]:
@@ -154,35 +244,7 @@ def convert_dataset(dataset_name: str) -> dict[str, Any]:
     question_ids = set()
     concept_ids = set()
     rows = []
-    source_path = files["preprocessed"] if files["preprocessed"].exists() else files["train"]
-    if source_path.exists():
-        df = pd.read_csv(source_path)
-        required = {"user_id", "item_id", "correct"}
-        if not required.issubset(df.columns):
-            raise ValueError(f"Expected columns {sorted(required)} in {source_path}")
-
-        order_cols = [col for col in ["timestamp", "order_id"] if col in df.columns]
-        if order_cols:
-            df = df.sort_values(["user_id", *order_cols])
-
-        for uid, group in df.groupby("user_id", sort=False):
-            questions = [int(v) for v in group["item_id"].tolist()]
-            responses = [int(v) for v in group["correct"].tolist()]
-            if len(questions) < 2:
-                continue
-            row = {
-                "uid": str(uid),
-                "questions": ",".join(map(str, questions)),
-                "responses": ",".join(map(str, responses)),
-                "fold": 0,
-            }
-            if "skill_id" in group.columns:
-                concepts = [int(v) for v in group["skill_id"].tolist()]
-                row["concepts"] = ",".join(map(str, concepts))
-                concept_ids.update(concepts)
-            rows.append(row)
-            question_ids.update(questions)
-    elif files["data_txt"].exists():
+    if files["data_txt"].exists():
         data = read_kt_file(str(files["data_txt"]))
         for item in data:
             questions = [int(v) for v in item.get("question_seq", [])]
@@ -201,6 +263,14 @@ def convert_dataset(dataset_name: str) -> dict[str, Any]:
                 concept_ids.update(int(v) for v in concept_seq)
             rows.append(row)
             question_ids.update(questions)
+    elif files["preprocessed"].exists():
+        df = pd.read_csv(files["preprocessed"])
+        _append_row_table_sequences(df, rows, question_ids, concept_ids, fold=0)
+    elif files["train"].exists() or files["test"].exists():
+        if files["train"].exists():
+            _append_row_table_sequences(pd.read_csv(files["train"]), rows, question_ids, concept_ids, fold=0)
+        if files["test"].exists():
+            _append_row_table_sequences(pd.read_csv(files["test"]), rows, question_ids, concept_ids, fold=0)
     else:
         raise FileNotFoundError(
             f"No packaged processed KT source found for {dataset_name}: "
@@ -233,13 +303,13 @@ def main() -> None:
     subparsers.add_parser("list")
 
     status_parser = subparsers.add_parser("status")
-    status_parser.add_argument("--dataset-name", required=True)
+    status_parser.add_argument("--dataset-name", required=True, choices=_dataset_names())
 
     preprocess_parser = subparsers.add_parser("preprocess")
-    preprocess_parser.add_argument("--dataset-name", required=True)
+    preprocess_parser.add_argument("--dataset-name", required=True, choices=_dataset_names())
 
     convert_parser = subparsers.add_parser("convert")
-    convert_parser.add_argument("--dataset-name", required=True)
+    convert_parser.add_argument("--dataset-name", required=True, choices=_dataset_names())
 
     args = parser.parse_args()
     if args.command == "list":

@@ -7,66 +7,57 @@
     <link rel="stylesheet" href="dataset_source_index.css" />
   </head>
   <body>
-    <main class="page">
-      <header class="hero">
-        <div>
-          <p class="eyebrow">UnlearnKT</p>
-          <h1>Dataset Source Index</h1>
-          <p class="subtitle">
-            Official source links, local folder names, setup notes, and
-            download entrances for the datasets supported by this repository.
-          </p>
+    <div class="container">
+      <div class="top">
+        <h1>UnlearnKT Dataset Source Index</h1>
+        <div class="md-header__source">
+          <a
+            href="https://github.com/uniquecatk/UnlearnKT-new"
+            title="Go to repository"
+            class="md-source"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div class="md-source__icon md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <path
+                  d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"
+                />
+              </svg>
+            </div>
+            <div class="md-source__repository">GitHub</div>
+          </a>
         </div>
-        <span class="repo-link">Static page for GitHub Pages</span>
-      </header>
+      </div>
 
-      <section class="notice">
-        <p>
-          Datasets used in the paper are pinned to the top and marked in the
-          <strong>Used in Paper</strong> column, so reviewers can immediately
-          find the six required datasets.
-        </p>
-        <ul>
-          <li>
-            <strong>Official Source</strong>: original dataset landing page or
-            official project page.
-          </li>
-          <li>
-            <strong>Processed Package</strong>: your Google Drive package for
-            `data/processed_datasets/`.
-          </li>
-          <li>
-            <strong>Setup Notes</strong>: where to place the downloaded files
-            before starting the experiments.
-          </li>
-        </ul>
-      </section>
+      <p class="page-intro">
+        Official source links, local folder names, processed package entrances,
+        and setup notes for the datasets supported by this repository.
+      </p>
 
-      <section class="toolbar">
+      <div class="toolbar">
         <label class="toggle">
           <input id="paper-only-toggle" type="checkbox" />
           <span>Show only datasets used in the paper</span>
         </label>
-        <span id="dataset-count" class="count"></span>
-      </section>
+        <div id="dataset-count" class="dataset-count"></div>
+      </div>
 
-      <section class="table-card">
-        <table>
-          <thead>
-            <tr>
-              <th>Used in Paper</th>
-              <th>Dataset</th>
-              <th>Local Folder</th>
-              <th>Official Source</th>
-              <th>Processed Package</th>
-              <th>Setup Notes</th>
-            </tr>
-          </thead>
-          <tbody id="dataset-table-body"></tbody>
-        </table>
-      </section>
-    </main>
-
+      <table>
+        <thead>
+          <tr>
+            <th><span class="info-dot" data-field="used_in_paper"></span>used in paper</th>
+            <th><span class="info-dot" data-field="dataset"></span>dataset</th>
+            <th><span class="info-dot" data-field="local_folder"></span>local folder</th>
+            <th><span class="info-dot" data-field="official_source"></span>official source</th>
+            <th><span class="info-dot" data-field="processed_package"></span>processed package</th>
+            <th><span class="info-dot" data-field="setup_notes"></span>setup notes</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+    <div id="tooltip" class="tooltip"></div>
     <script src="dataset_source_index.js"></script>
   </body>
 </html>
