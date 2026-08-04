@@ -3,16 +3,10 @@ body {
   background-color: #f4f4f4;
   text-align: center;
   padding: 20px;
-  color: #111827;
 }
 
 a {
   text-decoration: none;
-  color: #1d4ed8;
-}
-
-a:hover {
-  text-decoration: underline;
 }
 
 .container {
@@ -20,7 +14,7 @@ a:hover {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-width: 96%;
+  max-width: 90%;
   margin: auto;
 }
 
@@ -28,23 +22,14 @@ a:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 h1 {
+  font-size: 1.5rem;
   margin: 0;
   padding: 0;
-  font-size: 1.5rem;
-  text-align: left;
   flex-grow: 1;
-}
-
-.page-intro {
-  margin: 0 0 16px;
-  text-align: left;
-  line-height: 1.6;
-  color: #4b5563;
 }
 
 .toolbar {
@@ -52,23 +37,19 @@ h1 {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin: 0 0 16px;
-  padding: 10px 12px;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  margin-bottom: 16px;
 }
 
 .toggle {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 0.95rem;
 }
 
 .dataset-count {
-  font-size: 14px;
-  color: #4b5563;
+  font-size: 0.9rem;
+  color: #555;
 }
 
 table {
@@ -84,7 +65,6 @@ td {
   text-align: center;
   position: relative;
   vertical-align: top;
-  line-height: 1.5;
 }
 
 th {
@@ -98,7 +78,7 @@ td.left {
 }
 
 tbody tr.paper-used {
-  background-color: #f8fbff;
+  background-color: #fafcff;
 }
 
 .info-dot {
@@ -119,11 +99,10 @@ tbody tr.paper-used {
   color: white;
   padding: 5px;
   border-radius: 5px;
-  font-size: 14px;
+  font-size: 16px;
   display: none;
-  max-width: 240px;
+  max-width: 200px;
   text-align: left;
-  z-index: 1000;
 }
 
 .md-header__source {
@@ -181,7 +160,7 @@ tbody tr.paper-used {
   display: block;
   margin-top: 4px;
   font-size: 12px;
-  color: #6b7280;
+  color: #666;
 }
 
 .folder-code {
@@ -205,7 +184,7 @@ tbody tr.paper-used {
 }
 
 .muted {
-  color: #6b7280;
+  color: #666;
   font-size: 13px;
 }
 
@@ -214,10 +193,6 @@ tbody tr.paper-used {
   .toolbar {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .container {
-    overflow-x: auto;
   }
 
   table {

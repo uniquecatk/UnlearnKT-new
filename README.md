@@ -44,7 +44,7 @@ Dataset sources can be referenced here: [https://uniquecatk.github.io/UnlearnKT-
 
 This repository now uses one unified KT data chain:
 
-`official raw data -> PyEdmine-style preprocessing in this repo -> data/processed_datasets -> kt_dataset_bridge.py -> sequence csv -> experiments`
+`official raw data -> preprocessing in this repo -> data/processed_datasets -> kt_dataset_bridge.py -> sequence csv -> experiments`
 
 Choose one setup path only.
 
@@ -62,11 +62,11 @@ Before extraction, the folder layout under `data/` should look like this:
 ```text
 data/
 └── processed_datasets_zip/
-    ├── assist2009-*.zip
-    ├── assist2012-*.zip
-    ├── assist2017-*.zip
-    ├── assistments15.zip
-    └── statics2011-*.zip
+    ├── assist2009.zip
+    ├── assist2012.zip
+    ├── assist2015.zip
+    ├── assist2017.zip
+    └── statics2011.zip
 ```
 
 After extraction, `data/processed_datasets/` should look like this:
