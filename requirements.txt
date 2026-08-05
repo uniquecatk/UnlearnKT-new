@@ -20,4 +20,4 @@ PyYAML==6.0.1
 picologging==0.9.3
 
 # System monitoring
-psutil==5.9.0
+psutil==5.9.4
