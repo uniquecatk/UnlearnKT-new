@@ -1,6 +1,6 @@
 # UnlearnKT
 
-Machine unlearning framework for privacy-preserving knowledge tracing, built on top of `ERASURE-main`.
+Machine unlearning framework for privacy-preserving knowledge tracing.
 
 ---
 
