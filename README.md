@@ -40,7 +40,7 @@ The core paper method (`QEFU-KT`) is implemented in `src/kt_unlearn/unlearners/Q
 
 ### Dataset Preparation
 
-Dataset sources can be referenced here: [https://uniquecatk.github.io/UnlearnKT-new/](https://uniquecatk.github.io/UnlearnKT-new/)
+Dataset sources can be referenced on [this page](https://uniquecatk.github.io/UnlearnKT-new/).
 
 This repository now uses one unified KT data chain:
 
