@@ -16,6 +16,7 @@ a {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   max-width: 90%;
   margin: auto;
+  overflow-x: auto;
 }
 
 .top {
@@ -56,6 +57,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  min-width: 1500px;
 }
 
 th,
@@ -163,26 +165,6 @@ tbody tr.paper-used {
   color: #666;
 }
 
-.folder-code {
-  display: inline-block;
-  font-family: Consolas, "Courier New", monospace;
-  font-size: 13px;
-  background: #f3f4f6;
-  padding: 2px 6px;
-  border-radius: 6px;
-}
-
-.note-pill {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-  background: #eef2ff;
-  color: #4338ca;
-}
-
 .muted {
   color: #666;
   font-size: 13px;
@@ -196,6 +178,6 @@ tbody tr.paper-used {
   }
 
   table {
-    min-width: 980px;
+    min-width: 1500px;
   }
 }

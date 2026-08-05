@@ -1,126 +1,199 @@
 const DATASETS = [
   {
     name: "ASSIST2009",
-    localFolder: "ASSIST2009",
     usedInPaper: true,
     sourceLabel: "ASSISTments 2009-2010 Skill Builder",
     sourceUrl:
       "https://sites.google.com/site/assistmentsdata/home/2009-2010-assistment-data/skill-builder-data-2009-2010",
-    preprocessNotes:
-      "Download the official skill_builder_data.csv or your prepared single-file release, then place it directly under data/processed_datasets/ASSIST2009/.",
     tag: "Paper dataset",
+    nInteraction: "338001",
+    nUser: "4163",
+    nConcept: "123",
+    nQuestion: "17751",
+    avgSeqLen: "70.27",
+    avgAnswerAcc: "0.6583",
+    questionSparsity: "0.9961",
+    conceptSparsity: "0.9156",
+    sideInfo: "concept_text, school_id, timestamp, num_hint, num_attempt",
   },
   {
     name: "ASSIST2015",
-    localFolder: "assist2015",
     usedInPaper: true,
     sourceLabel: "ASSISTments 2015 Skill Builder",
     sourceUrl:
       "https://sites.google.com/site/assistmentsdata/home/2015-assistments-skill-builder-data",
-    preprocessNotes:
-      "Download the prepared processed package and place the extracted files under data/processed_datasets/assist2015/.",
     tag: "Paper dataset",
+    nInteraction: "708631",
+    nUser: "19917",
+    nConcept: "100",
+    nQuestion: "100",
+    avgSeqLen: "36.46",
+    avgAnswerAcc: "0.7295",
+    questionSparsity: "0.9359",
+    conceptSparsity: "0.9359",
+    sideInfo: "-",
   },
   {
     name: "ASSIST2017",
-    localFolder: "assist2017",
     usedInPaper: true,
     sourceLabel: "ASSISTments 2017 Dataset",
     sourceUrl: "https://sites.google.com/view/assistmentsdatamining/dataset",
-    preprocessNotes:
-      "Download the prepared processed package and place the extracted files under data/processed_datasets/assist2017/.",
     tag: "Paper dataset",
+    nInteraction: "864713",
+    nUser: "1709",
+    nConcept: "101",
+    nQuestion: "2803",
+    avgSeqLen: "505.98",
+    avgAnswerAcc: "0.3674",
+    questionSparsity: "0.9265",
+    conceptSparsity: "0.5935",
+    sideInfo: "concept_text, school_id, timestamp, use_time, num_hint, num_attempt",
   },
   {
     name: "ASSIST2012",
-    localFolder: "assist2012",
     usedInPaper: true,
     sourceLabel: "ASSISTments 2012-2013 School Data",
     sourceUrl:
       "https://sites.google.com/site/assistmentsdata/home/2012-13-school-data-with-affect",
-    preprocessNotes:
-      "Download the prepared package and place it under data/processed_datasets/assist2012/. Use the packaged benchmark-ready files directly.",
     tag: "Paper dataset",
+    nInteraction: "2711813",
+    nUser: "29018",
+    nConcept: "265",
+    nQuestion: "53091",
+    avgSeqLen: "96.41",
+    avgAnswerAcc: "0.6954",
+    questionSparsity: "0.9983",
+    conceptSparsity: "0.9493",
+    sideInfo: "concept_text, school_id, timestamp, use_time, num_hint, num_attempt",
   },
   {
     name: "STATICS2011",
-    localFolder: "statics2011",
     usedInPaper: true,
     sourceLabel: "PSLC DataShop: Statics 2011",
     sourceUrl: "https://pslcdatashop.web.cmu.edu/DatasetInfo?datasetId=507",
-    preprocessNotes:
-      "Download the prepared package and place it under data/processed_datasets/statics2011/. Use the packaged benchmark-ready files directly.",
     tag: "Paper dataset",
+    nInteraction: "189297",
+    nUser: "333",
+    nConcept: "27",
+    nQuestion: "1223",
+    avgSeqLen: "568.46",
+    avgAnswerAcc: "0.7654",
+    questionSparsity: "0.5398",
+    conceptSparsity: "0.3516",
+    sideInfo: "concept_text, question_text, timestamp",
   },
   {
     name: "EdNet-KT1",
-    localFolder: "ednet-kt1",
     usedInPaper: true,
     sourceLabel: "EdNet Official Repository",
     sourceUrl: "https://github.com/riiid/ednet",
-    preprocessNotes:
-      "Download the prepared package and place it under data/processed_datasets/ednet-kt1/. The repository uses the prepared benchmark-ready version directly.",
     tag: "Paper dataset",
+    nInteraction: "26056109",
+    nUser: "5000",
+    nConcept: "188",
+    nQuestion: "12272",
+    avgSeqLen: "5211.22",
+    avgAnswerAcc: "0.702",
+    questionSparsity: "0.6793",
+    conceptSparsity: "0.08",
+    sideInfo: "timestamp, use_time, num_hint, num_attempt",
   },
   {
     name: "ASSIST2012 (pyKT split variant)",
-    localFolder: "assistments12",
     usedInPaper: false,
     sourceLabel: "ASSISTments 2012-2013 School Data",
     sourceUrl:
       "https://sites.google.com/site/assistmentsdata/home/2012-13-school-data-with-affect",
-    preprocessNotes:
-      "Download the prepared package and place it under data/processed_datasets/assistments12/.",
     tag: "Additional supported dataset",
+    nInteraction: "-",
+    nUser: "-",
+    nConcept: "-",
+    nQuestion: "-",
+    avgSeqLen: "-",
+    avgAnswerAcc: "-",
+    questionSparsity: "-",
+    conceptSparsity: "-",
+    sideInfo: "-",
   },
   {
     name: "Algebra 2005",
-    localFolder: "algebra05",
     usedInPaper: false,
     sourceLabel: "PSLC DataShop: Algebra 2005-2006",
     sourceUrl: "https://pslcdatashop.web.cmu.edu/",
-    preprocessNotes:
-      "Download the prepared package and place it under data/processed_datasets/algebra05/.",
     tag: "Additional supported dataset",
+    nInteraction: "-",
+    nUser: "-",
+    nConcept: "-",
+    nQuestion: "-",
+    avgSeqLen: "-",
+    avgAnswerAcc: "-",
+    questionSparsity: "-",
+    conceptSparsity: "-",
+    sideInfo: "-",
   },
   {
     name: "Bridge to Algebra 2006",
-    localFolder: "bridge_algebra06",
     usedInPaper: false,
     sourceLabel: "PSLC DataShop: Bridge to Algebra 2006-2007",
     sourceUrl: "https://pslcdatashop.web.cmu.edu/",
-    preprocessNotes:
-      "Download the prepared package and place it under data/processed_datasets/bridge_algebra06/.",
     tag: "Additional supported dataset",
+    nInteraction: "-",
+    nUser: "-",
+    nConcept: "-",
+    nQuestion: "-",
+    avgSeqLen: "-",
+    avgAnswerAcc: "-",
+    questionSparsity: "-",
+    conceptSparsity: "-",
+    sideInfo: "-",
   },
   {
     name: "Spanish",
-    localFolder: "spanish",
     usedInPaper: false,
     sourceLabel: "Duolingo SLAM Shared Task",
     sourceUrl: "https://sharedtask.duolingo.com/",
-    preprocessNotes:
-      "Download the prepared package and place it under data/processed_datasets/spanish/.",
     tag: "Additional supported dataset",
+    nInteraction: "-",
+    nUser: "-",
+    nConcept: "-",
+    nQuestion: "-",
+    avgSeqLen: "-",
+    avgAnswerAcc: "-",
+    questionSparsity: "-",
+    conceptSparsity: "-",
+    sideInfo: "-",
   },
   {
     name: "STATICS (processed split variant)",
-    localFolder: "statics",
     usedInPaper: false,
     sourceLabel: "PSLC DataShop: Statics 2011",
     sourceUrl: "https://pslcdatashop.web.cmu.edu/DatasetInfo?datasetId=507",
-    preprocessNotes:
-      "Download the prepared package and place it under data/processed_datasets/statics/.",
     tag: "Additional supported dataset",
+    nInteraction: "-",
+    nUser: "-",
+    nConcept: "-",
+    nQuestion: "-",
+    avgSeqLen: "-",
+    avgAnswerAcc: "-",
+    questionSparsity: "-",
+    conceptSparsity: "-",
+    sideInfo: "-",
   },
 ];
 
 const FIELD_MEANING = {
   used_in_paper: "Whether this dataset is used in the paper experiments.",
-  dataset: "Dataset name and its role in this repository.",
-  local_folder: "Folder name expected under data/processed_datasets/.",
-  official_source: "Official dataset landing page or source project page.",
-  setup_notes: "Where to place the downloaded files before running experiments.",
+  name: "Dataset name and whether it is part of the paper benchmark.",
+  n_interaction: "Total number of learner-question interactions.",
+  n_user: "Total number of learners.",
+  n_concept: "Total number of concepts or knowledge components.",
+  n_question: "Total number of questions or items.",
+  avg_seq_len: "Average interaction sequence length per learner.",
+  avg_answer_acc: "Average answer accuracy over interactions.",
+  question_sparsity: "Question-level sparsity statistic.",
+  concept_sparsity: "Concept-level sparsity statistic.",
+  side_info: "Available side information fields in the dataset.",
+  link: "Official source page for this dataset.",
 };
 
 const paperOrder = [
@@ -165,14 +238,16 @@ function renderRows(paperOnly = false) {
             <span class="dataset-title">${item.name}</span>
             <span class="dataset-tag">${item.tag}</span>
           </td>
-          <td><code class="folder-code">${item.localFolder}</code></td>
-          <td class="left">
-            <a href="${item.sourceUrl}" target="_blank" rel="noreferrer">${item.sourceLabel}</a>
-          </td>
-          <td class="left">
-            ${item.preprocessNotes}
-            <div class="note-pill">${item.usedInPaper ? "Used in paper" : "Additional dataset"}</div>
-          </td>
+          <td>${item.nInteraction}</td>
+          <td>${item.nUser}</td>
+          <td>${item.nConcept}</td>
+          <td>${item.nQuestion}</td>
+          <td>${item.avgSeqLen}</td>
+          <td>${item.avgAnswerAcc}</td>
+          <td>${item.questionSparsity}</td>
+          <td>${item.conceptSparsity}</td>
+          <td class="left">${item.sideInfo}</td>
+          <td><a href="${item.sourceUrl}" title="${item.sourceLabel}" target="_blank" rel="noreferrer">source</a></td>
         </tr>
       `
     )
